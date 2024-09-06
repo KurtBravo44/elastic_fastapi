@@ -1,0 +1,28 @@
+   version: '3'
+   services:
+     postgres:
+       image: postgres:latest
+       environment:
+         POSTGRES_USER: user
+         POSTGRES_PASSWORD: password
+         POSTGRES_DB: dbname
+       ports:
+         - "5454:5454"
+
+     elasticsearch:
+       image: elasticsearch:8.5.1
+       environment:
+         discovery.type: single-node
+       ports:
+         - "9200:9200"
+
+
+     app:
+       build: .
+       depends_on:
+         - postgres
+         - elasticsearch
+       environment:
+         DATABASE_URL: postgresql+asyncpg://user:password@postgres/dbname
+         ELASTICSEARCH_URL: http://elasticsearch:9200
+
